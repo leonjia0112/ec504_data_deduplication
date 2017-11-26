@@ -36,8 +36,12 @@ public abstract class Chunk {
 	 * 
 	 * @return table contains both hash value and its data 
 	 */
-	protected Hashtable<String, String> getTable(){
+	public Hashtable<String, String> getTable(){
 		return chunkData;
+	}
+	
+	public HashMap<String, ArrayList<String>> getFileHashIndex(){
+		return fileHashIndex;
 	}
 	
 	/**

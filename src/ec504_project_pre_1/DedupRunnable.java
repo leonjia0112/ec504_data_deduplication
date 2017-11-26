@@ -6,6 +6,7 @@ import java.util.*;
 
 // Import Chunk package
 import Chunk.*;
+import FileIO.FileHandler;
 
 public class DedupRunnable {
 	public static void main(String args[]) throws IOException{
@@ -19,7 +20,8 @@ public class DedupRunnable {
 			File[] list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			table = bsw.handleFile(list);
-			writeDataBlock(table);
+			writeToFile(table, "chunk.xml");
+			writeToFile(bsw.getFileHashIndex(), "index.xml");
 		}else if(args.length < 1) {
 			System.out.println("Please input the directory of the files to be deduplicated.");
 		}else {
@@ -28,35 +30,22 @@ public class DedupRunnable {
 	}
 	
 	
-	
-	/**
-	 * write each file with the its corresponding hashvalue and the index to record the
-	 * sequence of the chunks 
-	 * 
-	 * @param list of the fileIndexMap object for each file
-	 */
-	public static void writeFileIndex(ArrayList<FileIndexMap> list) throws IOException{
-		FileOutputStream fos;
-		XMLEncoder e;
-		
-		for(int i = 0; i < list.size(); i++){
-			fos = new FileOutputStream(Config.LOCAL + list.get(i).getName());
-			e = new XMLEncoder(fos);
-			e.writeObject(list.get(i).getMap());
-			e.close();
-			// System.out.println("finished write " + Config.DESKTOP + list.get(i).getName());
-		}
-	}
-	
 	/**
 	 * write the hashtable to xml file
 	 * 
 	 * @param hashtable with hash value and its chunk of data
 	 */
-	public static void writeDataBlock(Hashtable<String, String> table) throws IOException{
-		FileOutputStream fos = new FileOutputStream("/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/" + "tmp.xml");
+	public static void writeToFile(Hashtable<String, String> table, String fileName) throws IOException{
+		FileOutputStream fos = new FileOutputStream(fileName);
 		XMLEncoder e = new XMLEncoder(fos);	
 		e.writeObject(table);
 		e.close();
-	}	
+	}
+	
+	public static void writeToFile(HashMap<String, ArrayList<String>> fileHashIndex, String fileName) throws IOException{
+		FileOutputStream fos = new FileOutputStream(fileName);
+		XMLEncoder e = new XMLEncoder(fos);	
+		e.writeObject(fileHashIndex);
+		e.close();
+	}
 }

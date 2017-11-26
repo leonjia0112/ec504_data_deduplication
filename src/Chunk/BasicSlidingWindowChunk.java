@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class BasicSlidingWindowChunk extends Chunk{
@@ -31,6 +32,8 @@ public class BasicSlidingWindowChunk extends Chunk{
 		int mask = 1 << 13;
 		mask--; // 13 bit of '1's
 
+		ArrayList<String> hashList = new ArrayList<String>();
+		
 		File f = inputFile;
 		FileInputStream fis = null; // For sliding window
 		FileInputStream fisForChunk = null; // For chunking the input stream
@@ -50,21 +53,26 @@ public class BasicSlidingWindowChunk extends Chunk{
 
 			long length = bis.available();
 			long curr = length;
-			int hash = firstHash(windowSize);
+			int windowHash = firstWindowHash(windowSize);
 			curr -= bis.available(); // move the curr to next byte of the initial hash window
 
 			while (curr < length) {
-				if ((hash & mask) == 0) {
-					// window found - hash it,
+				
+				// check whether window is found
+				if ((windowHash & mask) == 0) {
+					
+					// determine window chunk size
 					if (firstChunk == true) {
 						chunk = new byte[(int) curr];
 						firstChunk = false;
 					} else {
 						chunk = new byte[chunkRange];
 					}
+					
+					// hash and save chunk
 					if (fisForChunk.read(chunk) != -1) {
-						// perform the hash on the chunk
 						hashValue = getChunkHash(chunk);
+						hashList.add(hashValue);
 						
 						// If not exist then save, otherwise is duplicate
 						if (!chunkData.containsKey(hashValue)) {
@@ -76,7 +84,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 					chunkRange = 0;
 					chunkNumberCount++;
 				}
-				hash = nexthash(hash);
+				windowHash = nextWindowHash(windowHash);
 				curr++;
 				chunkRange++;
 			}
@@ -87,6 +95,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 				System.out.println(duplicateChunkCount + " duplicated chunks in: " + f.getName());
 			}
 			
+			fileHashIndex.put(inputFile.getName(), hashList);
 			bis.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,7 +113,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 		}
 	}
 
-	private int firstHash(int length) throws IOException {
+	private int firstWindowHash(int length) throws IOException {
 		buffer = new int[length]; // create circular buffer
 		int hash = 0;
 
@@ -121,7 +130,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 		return hash;
 	}
 
-	private int nexthash(int preHash) throws IOException {
+	private int nextWindowHash(int preHash) throws IOException {
 		int c = isForHash.read(); // next byte from stream
 		int nextHash = (preHash - multiplier*buffer[bufferPointer]) * CONST + c;
 		incrementBuffer(c);
