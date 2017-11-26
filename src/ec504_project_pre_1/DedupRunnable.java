@@ -4,85 +4,59 @@ import java.beans.XMLEncoder;
 import java.io.*;
 import java.util.*;
 
+// Import Chunk package
+import Chunk.*;
+
 public class DedupRunnable {
 	public static void main(String args[]) throws IOException{
-		//		File file = new File("/Users/peijia/Desktop/ec504_sample_file/file1.txt");
-
-		HashFunction myHash = new HashFunction();
-
-		Hashtable<String, String> myTable = new Hashtable<String, String>();
-		
-		byte[] readByte = new byte[1024]; // read 1kb
-		int i = 0;
-		FileInputStream fis  = null;
-		ArrayList<FileIndexMap> fimList = new ArrayList<FileIndexMap>();
-		
-		// get all the files
-		File inputFiles = new File(Config.PATH);
-		File[] fileList = inputFiles.listFiles();
-		int count = 0;
-		
-		for(File f : fileList){
-			System.out.println(f.getPath());
-			FileIndexMap fimTemp = new FileIndexMap(f.getName());
-			int index = 0;
-			if(f.isFile() && !f.isHidden()){
-				try{
-
-
-					fis = new FileInputStream(f.getAbsolutePath());
-
-					while(fis.read(readByte) != -1){
-						
-						String hashValue = myHash.getHashValue(readByte);
-						
-						//System.out.println("readByte: " + readByte);
-						System.out.println("hashValue: " + hashValue);
-						//System.out.println("data: " + byteToData(readByte));
-						
-						String chunkData = byteToData(readByte);
-						if(!myTable.containsKey(hashValue)){
-							myTable.put(hashValue, chunkData);
-						}else{
-							System.out.println(count++ + "th duplicated contents found !");
-						}
-						fimTemp.addHashValue(index, hashValue);
-						index++;
-						
-					}
-					System.out.println("finished file" + f.getName());
-					
-					
-				}catch(FileNotFoundException e){
-					e.printStackTrace();
-				}catch(IOException e){
-					e.printStackTrace();
-				}
-			}
+		if(args.length == 1) {
+			//String dir = "/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/src/ec504_sample_file";
+			
+			FileHandler fh = new FileHandler(args[0]);
+			// FileHandler fh = new FileHandler(dir);
+			
+			Hashtable<String, String> table = new Hashtable<String, String>();
+			File[] list = fh.getFiles();
+			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
+			table = bsw.handleFile(list);
+			writeDataBlock(table);
+		}else if(args.length < 1) {
+			System.out.println("Please input the directory of the files to be deduplicated.");
+		}else {
+			System.out.println("This program only take one argument.");
 		}
-		
-		Enumeration hashKeys = myTable.keys();
-		
-		// print out data in hash table
-//		while(hashKeys.hasMoreElements()){
-//			String str = (String) hashKeys.nextElement();
-//			System.out.println(str.toString() + ": " + myTable.get(str));
-//		}
-		
-		FileOutputStream fos = new FileOutputStream("/Users/peijia/Desktop/tmp.xml");
-		XMLEncoder e = new XMLEncoder(fos);
-
-		e.writeObject(myTable);
-		
-		e.close();
 	}
 	
-	public static String byteToData(byte[] readByte){
-		String result = "";
+	
+	
+	/**
+	 * write each file with the its corresponding hashvalue and the index to record the
+	 * sequence of the chunks 
+	 * 
+	 * @param list of the fileIndexMap object for each file
+	 */
+	public static void writeFileIndex(ArrayList<FileIndexMap> list) throws IOException{
+		FileOutputStream fos;
+		XMLEncoder e;
 		
-		for(byte b : readByte){
-			result += (char)b;			
+		for(int i = 0; i < list.size(); i++){
+			fos = new FileOutputStream(Config.LOCAL + list.get(i).getName());
+			e = new XMLEncoder(fos);
+			e.writeObject(list.get(i).getMap());
+			e.close();
+			// System.out.println("finished write " + Config.DESKTOP + list.get(i).getName());
 		}
-		return result;
 	}
+	
+	/**
+	 * write the hashtable to xml file
+	 * 
+	 * @param hashtable with hash value and its chunk of data
+	 */
+	public static void writeDataBlock(Hashtable<String, String> table) throws IOException{
+		FileOutputStream fos = new FileOutputStream("/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/" + "tmp.xml");
+		XMLEncoder e = new XMLEncoder(fos);	
+		e.writeObject(table);
+		e.close();
+	}	
 }

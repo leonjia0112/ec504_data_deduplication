@@ -8,11 +8,20 @@ public class FileIndexMap {
 	private String fileName;
 	
 	public FileIndexMap(String name){
+		fileName = name;
 		hashIndexMap = new HashMap<Integer, String>();
+	}
+	
+	public FileIndexMap(){
+		this("");
 	}
 	
 	public String getName(){
 		return this.fileName;
+	}
+	
+	public HashMap<Integer, String> getMap(){
+		return hashIndexMap;
 	}
 	
 	public void addHashValue(Integer index, String hash){
