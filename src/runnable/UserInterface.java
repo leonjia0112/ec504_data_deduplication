@@ -1,4 +1,4 @@
-package ec504_project_pre_1;
+package runnable;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

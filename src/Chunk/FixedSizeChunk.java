@@ -17,13 +17,12 @@ import java.util.Hashtable;
 public class FixedSizeChunk extends Chunk{
 
 	/**
-	 * Constuctor
+	 * Constructor
 	 * 
 	 * @param directory contains all the files
 	 */
 	public FixedSizeChunk(String inputDir) {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
