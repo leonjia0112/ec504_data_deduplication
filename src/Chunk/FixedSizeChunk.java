@@ -7,9 +7,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-
+/**
+ * This class create chunk by splitting the file into equal size windows,
+ * then a hash value is created for finding duplicated chunk.
+ * 
+ * @author peijia
+ *
+ */
 public class FixedSizeChunk extends Chunk{
 
+	/**
+	 * Constuctor
+	 * 
+	 * @param directory contains all the files
+	 */
 	public FixedSizeChunk(String inputDir) {
 		super();
 		// TODO Auto-generated constructor stub
@@ -47,6 +58,5 @@ public class FixedSizeChunk extends Chunk{
 			}
 		}
 		return chunkData;
-	}
-	
+	}	
 }

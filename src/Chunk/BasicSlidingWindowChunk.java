@@ -8,6 +8,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+/**
+ * This class using Basic Sliding Window algorithm to create chunk for each
+ * file. This is a content define chunking algorithm that has variable chunk
+ * size based on file content.
+ * 
+ * @author Pei Jia
+ */
 public class BasicSlidingWindowChunk extends Chunk{
 
 	/**
@@ -28,6 +35,12 @@ public class BasicSlidingWindowChunk extends Chunk{
 		return chunkData;
 	}
 
+	/**
+	 * For one file, chunk the file using sliding window and add those chunks
+	 * to a hash table to store the chunk hash and chunk data.
+	 * 
+	 * @param inputFile that needs to be chunked
+	 */
 	private void makeChunk(File inputFile) {
 		ArrayList<String> hashList = new ArrayList<String>();
 		FileInputStream fis = null;
@@ -51,7 +64,6 @@ public class BasicSlidingWindowChunk extends Chunk{
 				
 				// check whether window is found
 				if ((windowHash & breakpoint) == 0) {
-//					System.out.printf("wh: %d, bp: %d\n", windowHash, breakpoint);
 					byte[] chunk = null;
 					if (firstChunk == true) {
 						chunk = new byte[(int) currByte];
@@ -103,11 +115,18 @@ public class BasicSlidingWindowChunk extends Chunk{
 		}
 	}
 
+	/**
+	 * Create the window hash value for the first time that is the hash
+	 * value for all the element within the size of the window
+	 * 
+	 * @param length of the window
+	 * @return hash value for each window
+	 * @throws IOException
+	 */
 	private int firstWindowHash(int length) throws IOException {
-		buffer = new int[length]; // create circular buffer
+		buffer = new int[length];
 		int hash = 0;
 
-		// calculate the hash sum of p^n * a[x]
 		for (int i = 0; i < length; i++) {
 			int c = isForHash.read();
 			if (c == -1) 
@@ -120,6 +139,14 @@ public class BasicSlidingWindowChunk extends Chunk{
 		return hash;
 	}
 
+	/**
+	 * Use rabin fingerprint algorithm to calculate the window hash value
+	 * by moving the window one byte forward
+	 * 
+	 * @param previous hash value of the last window
+	 * @return hash value of the current window
+	 * @throws IOException
+	 */
 	private int nextWindowHash(int preHash) throws IOException {
 		int c = isForHash.read();
 		// bufferpointer points at last char
@@ -128,6 +155,12 @@ public class BasicSlidingWindowChunk extends Chunk{
 		return nextHash;
 	}
 
+	/**
+	 * This is a circular buffer implementation, it keep track of the last and
+	 * first byte element of the window
+	 * 
+	 * @param next byte value
+	 */
 	private void incrementBuffer(int c) {
 		// circular buffer array, first char + 1 is last char
 		// last char is changed to first char
@@ -136,6 +169,9 @@ public class BasicSlidingWindowChunk extends Chunk{
 		bufferPointer = bufferPointer % buffer.length;
 	}
 	
+	/**
+	 * initialize parameters for sliding window
+	 */
 	private void initilizeParam() {
 		multiplier = 1;
 		bufferPointer = 0;

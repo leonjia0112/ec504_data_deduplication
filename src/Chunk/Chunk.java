@@ -33,21 +33,23 @@ public abstract class Chunk {
 	public abstract Hashtable<String, String> handleFile(File[] inputFile);
 	
 	/**
-	 * 
 	 * @return table contains both hash value and its data 
 	 */
 	public Hashtable<String, String> getTable(){
 		return chunkData;
 	}
 	
+	/**
+	 * @return map contains file and the chunk hash value in order
+	 */
 	public HashMap<String, ArrayList<String>> getFileHashIndex(){
 		return fileHashIndex;
 	}
 	
 	/**
-	 * Get hashvalue for one chunk of data
+	 * Get hash value for one chunk of data
 	 * 
-	 * @return hashvalue
+	 * @return hash value
 	 */
 	protected String getChunkHash(byte[] dataBytes){
 		md.update(dataBytes);

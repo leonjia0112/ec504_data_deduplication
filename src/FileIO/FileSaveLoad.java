@@ -14,6 +14,9 @@ import java.util.Hashtable;
 
 public class FileSaveLoad {
 
+	// Currently it is static
+	// make it an object later
+	
 	/**
 	 * save the hashtable to tmp file
 	 * 
