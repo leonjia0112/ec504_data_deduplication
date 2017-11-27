@@ -56,6 +56,10 @@ public class FileHandler {
 		}
 	}
 	
+	public void deleteFile(String fileName) {
+		// do something
+	}
+	
 	/**
 	 * Retrieve all the file in the list
 	 * 

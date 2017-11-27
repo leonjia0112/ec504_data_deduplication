@@ -7,6 +7,7 @@ import java.util.*;
 // Import Chunk package
 import Chunk.*;
 import FileIO.FileHandler;
+import FileIO.*;
 
 public class DedupRunnable {
 	public static void main(String args[]) throws IOException{
@@ -20,32 +21,12 @@ public class DedupRunnable {
 			File[] list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			table = bsw.handleFile(list);
-			writeToFile(table, "chunk.xml");
-			writeToFile(bsw.getFileHashIndex(), "index.xml");
+			FileSaveLoad.writeToFile(table, "chunk.xml");
+			FileSaveLoad.writeToFile(bsw.getFileHashIndex(), "index.xml");
 		}else if(args.length < 1) {
 			System.out.println("Please input the directory of the files to be deduplicated.");
 		}else {
 			System.out.println("This program only take one argument.");
 		}
-	}
-	
-	
-	/**
-	 * write the hashtable to xml file
-	 * 
-	 * @param hashtable with hash value and its chunk of data
-	 */
-	public static void writeToFile(Hashtable<String, String> table, String fileName) throws IOException{
-		FileOutputStream fos = new FileOutputStream(fileName);
-		XMLEncoder e = new XMLEncoder(fos);	
-		e.writeObject(table);
-		e.close();
-	}
-	
-	public static void writeToFile(HashMap<String, ArrayList<String>> fileHashIndex, String fileName) throws IOException{
-		FileOutputStream fos = new FileOutputStream(fileName);
-		XMLEncoder e = new XMLEncoder(fos);	
-		e.writeObject(fileHashIndex);
-		e.close();
 	}
 }
