@@ -29,41 +29,32 @@ public class BasicSlidingWindowChunk extends Chunk{
 	}
 
 	private void makeChunk(File inputFile) {
-		int mask = 1 << 13;
-		mask--; // 13 bit of '1's
-
 		ArrayList<String> hashList = new ArrayList<String>();
-		
-		File f = inputFile;
-		FileInputStream fis = null; // For sliding window
-		FileInputStream fisForChunk = null; // For chunking the input stream
-		BufferedInputStream bis = null;
+		FileInputStream fis = null;
+		FileInputStream fisForChunk = null;
 		try {
-			fis = new FileInputStream(f);
-			fisForChunk = new FileInputStream(f);
-			bis = new BufferedInputStream(fis);
+			fis = new FileInputStream(inputFile);
+			fisForChunk = new FileInputStream(inputFile);
+			isForHash = new BufferedInputStream(fis);
+			
 			int chunkNumberCount = 0; // count chunks
 			int duplicateChunkCount = 0; // count duplicate
-			byte[] chunk = null;
-			String hashValue = null;
+			int breakpoint = 1 << 11;
+			breakpoint--;
 			boolean firstChunk = true;
-			
-			// BufferedInputStream is faster to read byte-by-byte from
-			this.isForHash = bis;
+			long totalByte = isForHash.available();
+			String chunkHashValue = null;
 
-			long length = bis.available();
-			long curr = length;
 			int windowHash = firstWindowHash(windowSize);
-			curr -= bis.available(); // move the curr to next byte of the initial hash window
-
-			while (curr < length) {
+			long currByte = totalByte - isForHash.available(); // move the curr to next byte of the initial hash window
+			while (currByte < totalByte) {
 				
 				// check whether window is found
-				if ((windowHash & mask) == 0) {
-					
-					// determine window chunk size
+				if ((windowHash & breakpoint) == 0) {
+//					System.out.printf("wh: %d, bp: %d\n", windowHash, breakpoint);
+					byte[] chunk = null;
 					if (firstChunk == true) {
-						chunk = new byte[(int) curr];
+						chunk = new byte[(int) currByte];
 						firstChunk = false;
 					} else {
 						chunk = new byte[chunkRange];
@@ -71,12 +62,11 @@ public class BasicSlidingWindowChunk extends Chunk{
 					
 					// hash and save chunk
 					if (fisForChunk.read(chunk) != -1) {
-						hashValue = getChunkHash(chunk);
-						hashList.add(hashValue);
+						chunkHashValue = getChunkHash(chunk);
+						hashList.add(chunkHashValue);
 						
-						// If not exist then save, otherwise is duplicate
-						if (!chunkData.containsKey(hashValue)) {
-							chunkData.put(hashValue, byteToData(chunk));
+						if (!chunkData.containsKey(chunkHashValue)) {
+							chunkData.put(chunkHashValue, byteToData(chunk));
 						} else {
 							duplicateChunkCount++;
 						}
@@ -84,29 +74,29 @@ public class BasicSlidingWindowChunk extends Chunk{
 					chunkRange = 0;
 					chunkNumberCount++;
 				}
+				
+				// move to next window
 				windowHash = nextWindowHash(windowHash);
-				curr++;
+				currByte++;
 				chunkRange++;
 			}
 			
 			// display progress
-			System.out.println(chunkNumberCount + " chunks generated for: " + f.getName());
+			System.out.println(chunkNumberCount + " chunks generated for: " + inputFile.getName());
 			if (duplicateChunkCount != 0) {
-				System.out.println(duplicateChunkCount + " duplicated chunks in: " + f.getName());
+				System.out.println(duplicateChunkCount + " duplicated chunks in: " + inputFile.getName());
 			}
 			
+			// store file hash index
 			fileHashIndex.put(inputFile.getName(), hashList);
-			bis.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// clean up
 			if (fis != null) {
 				try {
 					this.isForHash.close();
 					fis.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -131,14 +121,17 @@ public class BasicSlidingWindowChunk extends Chunk{
 	}
 
 	private int nextWindowHash(int preHash) throws IOException {
-		int c = isForHash.read(); // next byte from stream
+		int c = isForHash.read();
+		// bufferpointer points at last char
 		int nextHash = (preHash - multiplier*buffer[bufferPointer]) * CONST + c;
 		incrementBuffer(c);
 		return nextHash;
 	}
 
 	private void incrementBuffer(int c) {
-		buffer[bufferPointer] = c; // circular buffer, 1st pos == lastpos
+		// circular buffer array, first char + 1 is last char
+		// last char is changed to first char
+		buffer[bufferPointer] = c; 
 		bufferPointer++;
 		bufferPointer = bufferPointer % buffer.length;
 	}

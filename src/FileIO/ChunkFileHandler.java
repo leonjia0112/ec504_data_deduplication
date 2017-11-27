@@ -13,9 +13,9 @@ import java.util.Hashtable;
 
 public class ChunkFileHandler {
 	
-	public ChunkFileHandler() throws FileNotFoundException {
-		chunkTable = FileSaveLoad.readChunkTable("chunk.xml");
-		fileIndexList = FileSaveLoad.readIndexFileList("index.xml");
+	public ChunkFileHandler() throws ClassNotFoundException, IOException {
+		chunkTable = FileSaveLoad.loadChunkTable("tmp/chunk.tmp");
+		fileIndexList = FileSaveLoad.loadIndexFileList("tmp/index.tmp");
 	}
 	
 	public String getFile(String fileName) {
@@ -25,6 +25,10 @@ public class ChunkFileHandler {
 			System.out.println("File doesn't exist.");
 			return null;
 		}
+	}
+	
+	public void deleteFile(String fileName) {
+		// do something
 	}
 	
 	public String getFileHelper(String name) {
@@ -51,7 +55,7 @@ public class ChunkFileHandler {
 		if(file1 != null) {
 			System.out.println(file1);
 		}
-		PrintWriter out = new PrintWriter("output.txt");
+		PrintWriter out = new PrintWriter("tmp/output.txt");
 		out.println(file1);
 		out.close();
 	}

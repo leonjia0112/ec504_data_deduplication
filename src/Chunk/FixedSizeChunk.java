@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
-import ec504_project_pre_1.FileIndexMap;
 
 public class FixedSizeChunk extends Chunk{
 
@@ -21,7 +21,7 @@ public class FixedSizeChunk extends Chunk{
 			int index = 0;
 			int count = 0;
 			byte[] readByte = null;
-			FileIndexMap fimTemp = new FileIndexMap(f.getName());
+			ArrayList<String> hashList = new ArrayList<String>();
 			FileInputStream fis;
 			if(f.isFile() && !f.isHidden()){
 				try{
@@ -35,7 +35,7 @@ public class FixedSizeChunk extends Chunk{
 						}else{
 //							System.out.println(count++ + "th duplicated contents found !");
 						}
-						fimTemp.addHashValue(index++, hashValue);
+						hashList.add(hashValue);
 					}
 					System.out.println("finished " + f.getName());
 					// fileIndexMapList.add(fimTemp);		

@@ -55,11 +55,7 @@ public class FileHandler {
 			return null;
 		}
 	}
-	
-	public void deleteFile(String fileName) {
-		// do something
-	}
-	
+		
 	/**
 	 * Retrieve all the file in the list
 	 * 
@@ -77,6 +73,9 @@ public class FileHandler {
 		return result;
 	}
 	
+	/**
+	 * @return input file directory
+	 */
 	public String getDirectory() {
 		return dir;
 	}

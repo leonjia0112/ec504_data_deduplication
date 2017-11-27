@@ -21,12 +21,27 @@ public class DedupRunnable {
 			File[] list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			table = bsw.handleFile(list);
-			FileSaveLoad.writeToFile(table, "chunk.xml");
-			FileSaveLoad.writeToFile(bsw.getFileHashIndex(), "index.xml");
+			
+			save(table, "tmp/chunk.tmp");
+			save(bsw.getFileHashIndex(), "tmp/index.tmp");
 		}else if(args.length < 1) {
 			System.out.println("Please input the directory of the files to be deduplicated.");
 		}else {
 			System.out.println("This program only take one argument.");
 		}
+	}
+	
+	public static void save(Hashtable<String, String> t, String name) throws IOException {
+		FileOutputStream fos = new FileOutputStream(name);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(t);
+		oos.close();
+	}
+	
+	public static void save(HashMap<String, ArrayList<String>> m, String name) throws IOException {
+		FileOutputStream fos = new FileOutputStream(name);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(m);
+		oos.close();
 	}
 }
