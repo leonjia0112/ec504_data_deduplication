@@ -105,7 +105,7 @@ public class ChunkFileHandler {
 	 * @param name
 	 * @return file content
 	 */
-	public String getFileHelper(String name) {
+	private String getFileHelper(String name) {
 		ArrayList<String> indexList = fileIndexList.get(name);
 		String file = "";
 		for(String s: indexList) {
