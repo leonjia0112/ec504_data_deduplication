@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 
+import Chunk.BasicSlidingWindowChunk;
+
 public class ChunkFileHandler {
 	
 	/**
@@ -22,9 +24,16 @@ public class ChunkFileHandler {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public ChunkFileHandler() throws ClassNotFoundException, IOException {
-		chunkTable = FileSaveLoad.loadChunkTable("tmp/chunk.tmp");
-		fileIndexList = FileSaveLoad.loadIndexFileList("tmp/index.tmp");
+	public ChunkFileHandler(String l) throws ClassNotFoundException, IOException {
+		locker = l;
+		chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
+		fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "tmp/index.tmp");
+	}
+	
+	public ChunkFileHandler() {
+		locker = null;
+		chunkTable = new Hashtable<String, String>();
+		fileIndexList = new HashMap<String, ArrayList<String>>();
 	}
 	
 	/**
@@ -96,6 +105,10 @@ public class ChunkFileHandler {
 	 */
 	public void addFile(File f){
 		// do something
+		BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk(chunkTable, fileIndexList);
+		bsw.handleSingleFile(f);
+		chunkTable = bsw.getTable();
+		fileIndexList = bsw.getFileHashIndex();
 		
 	}
 	
@@ -139,6 +152,7 @@ public class ChunkFileHandler {
 	}
 
 	// Fields
+	private String locker;
 	private Hashtable<String, String> chunkTable;
 	private HashMap<String, ArrayList<String>> fileIndexList;
 }

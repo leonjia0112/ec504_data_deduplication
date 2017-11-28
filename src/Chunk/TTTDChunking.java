@@ -25,16 +25,20 @@ public class TTTDChunking extends Chunk{
 	}
 
 	@Override
-	public Hashtable<String, String> handleListFile(File[] inputFile) {
+	public void handleListFile(File[] inputFile) {
 		for(File f: inputFile) {
 			if(f.isFile() && !f.isHidden()) {
 				initilizeParam();
 				makeChunk(f);
 			}
 		}
-		return chunkData;
 	}
 
+	@Override
+	public void handleSingleFile(File file) {
+		// TODO Auto-generated method stub
+	}
+	
 	/**
 	 * For one file, chunk the file using sliding window and add those chunks
 	 * to a hash table to store the chunk hash and chunk data.
@@ -185,9 +189,5 @@ public class TTTDChunking extends Chunk{
 	private int chunkRange = 0;
 	private int windowSize = 1024;
 	private final int CONST = 69069;
-	@Override
-	public Hashtable<String, String> handleSingleFile(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

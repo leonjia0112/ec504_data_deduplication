@@ -36,8 +36,8 @@ public abstract class Chunk {
 	}
 
 	// These methods need to be implemented
-	public abstract Hashtable<String, String> handleListFile(File[] inputFile);
-	public abstract Hashtable<String, String> handleSingleFile(File file);
+	public abstract void handleListFile(File[] inputFile);
+	public abstract void handleSingleFile(File file);
 	
 	/**
 	 * @return table contains both hash value and its data 

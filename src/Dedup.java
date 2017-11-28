@@ -1,3 +1,6 @@
+import java.io.IOException;
+
+import execution.DedupExecution;
 
 public class Dedup {
 
@@ -10,16 +13,19 @@ public class Dedup {
 			+ "\nDisplay files in a locker.\n"
 			+ "  -s\t[locker]\n";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		
 		if(args.length > 0) {
+			DedupExecution de = new DedupExecution();
+			
 			switch(args[0]) {
 				case "-a":
 					if(args.length == 3){
-						
-						// do directory
+						// add the whole directory
+						de.add(args[1], args[2]);
 					}else if(args.length == 4){
-						// do single file
+						// add single file in a directory
+						de.add(args[1], args[2], args[3]);
 					}else{
 						System.out.println("Need more arguments for -a option.");
 					}

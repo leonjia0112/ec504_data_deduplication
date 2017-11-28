@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -24,23 +25,45 @@ public class BasicSlidingWindowChunk extends Chunk{
 		super();
 	}
 
+	public BasicSlidingWindowChunk(Hashtable<String, String> data, HashMap<String, ArrayList<String>> file) {
+		super(data, file);
+	}
+	
 	/**
 	 * This method split the file content into chunk and store the value
 	 * with hash value and chunk data in one table.
 	 * 
-	 * @param inputFile
+	 * @param list of file object
 	 */
 	@Override
-	public Hashtable<String, String> handleListFile(File[] inputFile) {
+	public void handleListFile(File[] inputFile) {
 		for(File f: inputFile) {
-			if(f.isFile() && !f.isHidden()) {
-				initilizeParam();
-				makeChunk(f);
-			}
+			chunkOneFile(f);
 		}
-		return chunkData;
 	}
 
+	/**
+	 * This method perform chunking of single file instead of a list of file
+	 * 
+	 * @param single File object
+	 */
+	@Override
+	public void handleSingleFile(File file) {
+		chunkOneFile(file);
+	}
+	
+	/**
+	 * Chunk single file
+	 * 
+	 * @param single file
+	 */
+	private void chunkOneFile(File f) {
+		if(f.isFile() && !f.isHidden()) {
+			initilizeParam();
+			makeChunk(f);
+		}
+	}
+	
 	/**
 	 * For one file, chunk the file using sliding window and add those chunks
 	 * to a hash table to store the chunk hash and chunk data.
@@ -192,9 +215,4 @@ public class BasicSlidingWindowChunk extends Chunk{
 	private int chunkRange = 0;
 	private int windowSize = 1024;
 	private final int CONST = 69069;
-	@Override
-	public Hashtable<String, String> handleSingleFile(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -1,4 +1,4 @@
-package runnable;
+package execution;
 
 import java.beans.XMLEncoder;
 import java.io.*;
@@ -19,9 +19,9 @@ public class DedupRunnable {
 			Hashtable<String, String> table = new Hashtable<String, String>();
 			File[] list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
-			table = bsw.handleListFile(list);
+			bsw.handleListFile(list);
 			
-			FileSaveLoad.save(table, "tmp/", "chunk.tmp");
+			FileSaveLoad.save(bsw.getTable(), "tmp/", "chunk.tmp");
 			FileSaveLoad.save(bsw.getFileHashIndex(), "tmp/", "index.tmp");
 		}else if(args.length < 1) {
 			System.out.println("Please input the directory of the files to be deduplicated.");
