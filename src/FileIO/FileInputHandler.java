@@ -2,12 +2,12 @@ package FileIO;
 
 import java.io.File;
 
-public class FileHandler {
+public class FileInputHandler {
 	
 	/**
 	 * Constructor
 	 */
-	public FileHandler(String inputDirectory){
+	public FileInputHandler(String inputDirectory){
 		dir = inputDirectory;
 		f = new File(inputDirectory);
 		fileList = f.listFiles();

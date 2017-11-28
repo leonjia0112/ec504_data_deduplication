@@ -16,7 +16,7 @@ public class FileDeleteTest {
 		System.out.println(cfh.getAllFileNames());
 		cfh.deleteFile("file4.txt");
 		System.out.println(cfh.getAllFileNames());
-		FileSaveLoad.save(cfh.getChunkTable(), "tmp/chunk_after_delete.tmp");
-		FileSaveLoad.save(cfh.getFileIndexList(), "tmp/index_after_delete.tmp");
+		FileSaveLoad.save(cfh.getChunkTable(), "tmp/", "chunk_after_delete.tmp");
+		FileSaveLoad.save(cfh.getFileIndexList(), "tmp/", "index_after_delete.tmp");
 	}
 }
