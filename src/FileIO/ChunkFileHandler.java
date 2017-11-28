@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 public class ChunkFileHandler {
@@ -41,6 +43,11 @@ public class ChunkFileHandler {
 		}
 	}
 	
+	public void reloadFiles() throws ClassNotFoundException, IOException {
+		chunkTable = FileSaveLoad.loadChunkTable("tmp/chunk.tmp");
+		fileIndexList = FileSaveLoad.loadIndexFileList("tmp/index.tmp");
+	}
+	
 	/**
 	 * Delete specific file based on the file name, pass if the file dosen't exist
 	 * 
@@ -48,8 +55,10 @@ public class ChunkFileHandler {
 	 */
 	public void deleteFile(String fileName) {
 		if(fileIndexList.containsKey(fileName)){
+			System.out.println("Deleting " + fileName + " .");
 			// add all the hash for all other files
-			ArrayList<String> usefullHash = new ArrayList<String>();
+			HashSet<String> usefullHash = new HashSet<String>();
+			HashSet<String> deleteHash = new HashSet<String>();
 			
 			// get all the hash that is used by all other files
 			for(String name : fileIndexList.keySet()){
@@ -60,7 +69,21 @@ public class ChunkFileHandler {
 				}
 			}
 			
-//			for(String h : )
+			// check exclude hashes
+			for(String h : fileIndexList.get(fileName)) {
+				if(!usefullHash.contains(h)) {
+					deleteHash.add(h);
+				}
+			}
+			
+			// delete hash from chunk table
+			for(String h: deleteHash) {
+				chunkTable.remove(h);
+			}
+			
+			// delete file
+			fileIndexList.remove(fileName);
+			
 		}else {
 			System.out.println("File doesn't exist.");
 		}
@@ -105,20 +128,15 @@ public class ChunkFileHandler {
 		return fileIndexList;
 	}
 	
-	/*
-	 * Unit text get file1.txt
-	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		ChunkFileHandler cfh = new ChunkFileHandler();
-		String file1 = cfh.getFile("file1.txt");
-		if(file1 != null) {
-			System.out.println(file1);
+	public String getAllFileNames() {
+		ArrayList<String> result = new ArrayList<String>();
+		for(String s: fileIndexList.keySet()) {
+			result.add(s);
 		}
-		PrintWriter out = new PrintWriter("tmp/output.txt");
-		out.println(file1);
-		out.close();
+		Collections.sort(result);
+		return result.toString();
 	}
-	
+
 	// Fields
 	private Hashtable<String, String> chunkTable;
 	private HashMap<String, ArrayList<String>> fileIndexList;
