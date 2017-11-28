@@ -1,6 +1,7 @@
 package FileIO;
 
 import java.beans.XMLDecoder;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,6 +33,7 @@ public class ChunkFileHandler {
 	 */
 	public String getFile(String fileName) {
 		if(fileIndexList.containsKey(fileName)) {
+			System.out.println("File " + fileName + " exists.");
 			return getFileHelper(fileName);
 		}else {
 			System.out.println("File doesn't exist.");
@@ -45,7 +47,32 @@ public class ChunkFileHandler {
 	 * @param fileName
 	 */
 	public void deleteFile(String fileName) {
-		// do something
+		if(fileIndexList.containsKey(fileName)){
+			// add all the hash for all other files
+			ArrayList<String> usefullHash = new ArrayList<String>();
+			
+			// get all the hash that is used by all other files
+			for(String name : fileIndexList.keySet()){
+				if(name.compareTo(fileName) != 0){
+					for(String h : fileIndexList.get(name)){
+						usefullHash.add(h);
+					}
+				}
+			}
+			
+//			for(String h : )
+		}else {
+			System.out.println("File doesn't exist.");
+		}
+	}
+	
+	/**
+	 * Add more file to the chunk table.
+	 * 
+	 * @param f
+	 */
+	public void addFile(File f){
+		// do somthing
 	}
 	
 	/**

@@ -62,8 +62,7 @@ public abstract class Chunk {
 	protected String byteToHex(byte[] mdbytes) {
 		StringBuffer sb = new StringBuffer("");
 		for (int i = 0; i < mdbytes.length; i++) {
-			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16)
-					.substring(1));
+			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
 	}
@@ -74,7 +73,7 @@ public abstract class Chunk {
 	 * @param byte array of one chunk of data
 	 * @return string representation of the read chunk bytes
 	 */
-	protected static String byteToData(byte[] readByte){
+	protected String byteToData(byte[] readByte){
 		String result = "";
 		for(byte b : readByte)
 			result += (char)b;			

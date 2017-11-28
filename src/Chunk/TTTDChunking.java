@@ -15,12 +15,12 @@ import java.util.Hashtable;
  * 
  * @author Pei Jia
  */
-public class BasicSlidingWindowChunk extends Chunk{
+public class TTTDChunking extends Chunk{
 
 	/**
 	 * Constructor
 	 */
-	public BasicSlidingWindowChunk() {
+	public TTTDChunking() {
 		super();
 	}
 
@@ -78,8 +78,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 						hashList.add(chunkHashValue);
 						
 						if (!chunkData.containsKey(chunkHashValue)) {
-							// System.out.println(new String(chunk));
-							chunkData.put(chunkHashValue, new String(chunk, "UTF-8"));
+							chunkData.put(chunkHashValue, byteToData(chunk));
 						} else {
 							duplicateChunkCount++;
 						}
