@@ -10,27 +10,34 @@ import java.util.Hashtable;
 public abstract class Chunk {
 
 	/**
-	 * Constructor
-	 * 
-	 * @param inputDir
+	 * Class constructor with not data
 	 */
 	public Chunk() {
 		chunkData = new Hashtable<String, String>();
 		fileHashIndex = new HashMap<String, ArrayList<String>>();
+		hashInit();
+	}
+	
+	/**
+	 * Class constructor with input chunk data and file hash list
+	 */
+	public Chunk(Hashtable<String, String> data, HashMap<String, ArrayList<String>> file){
+		chunkData = data;
+		fileHashIndex = file;
+		hashInit();
+	}
+	
+	private void hashInit(){
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * This method split the file content into chunk and store the value
-	 * with hash value and chunk data in one table.
-	 * 
-	 * @param inputFile
-	 */
-	public abstract Hashtable<String, String> handleFile(File[] inputFile);
+
+	// These methods need to be implemented
+	public abstract Hashtable<String, String> handleListFile(File[] inputFile);
+	public abstract Hashtable<String, String> handleSingleFile(File file);
 	
 	/**
 	 * @return table contains both hash value and its data 

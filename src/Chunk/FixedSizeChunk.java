@@ -26,7 +26,7 @@ public class FixedSizeChunk extends Chunk{
 	}
 
 	@Override
-	public Hashtable<String, String> handleFile(File[] inputFile) {
+	public Hashtable<String, String> handleListFile(File[] inputFile) {
 		for(File f : inputFile){
 			int index = 0;
 			int count = 0;
@@ -57,5 +57,11 @@ public class FixedSizeChunk extends Chunk{
 			}
 		}
 		return chunkData;
+	}
+
+	@Override
+	public Hashtable<String, String> handleSingleFile(File file) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

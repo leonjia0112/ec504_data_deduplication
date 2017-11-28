@@ -95,7 +95,8 @@ public class ChunkFileHandler {
 	 * @param f
 	 */
 	public void addFile(File f){
-		// do somthing
+		// do something
+		
 	}
 	
 	/**

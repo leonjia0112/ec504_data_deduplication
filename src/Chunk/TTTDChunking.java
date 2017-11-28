@@ -25,7 +25,7 @@ public class TTTDChunking extends Chunk{
 	}
 
 	@Override
-	public Hashtable<String, String> handleFile(File[] inputFile) {
+	public Hashtable<String, String> handleListFile(File[] inputFile) {
 		for(File f: inputFile) {
 			if(f.isFile() && !f.isHidden()) {
 				initilizeParam();
@@ -185,4 +185,9 @@ public class TTTDChunking extends Chunk{
 	private int chunkRange = 0;
 	private int windowSize = 1024;
 	private final int CONST = 69069;
+	@Override
+	public Hashtable<String, String> handleSingleFile(File file) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

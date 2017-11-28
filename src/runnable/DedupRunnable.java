@@ -19,7 +19,7 @@ public class DedupRunnable {
 			Hashtable<String, String> table = new Hashtable<String, String>();
 			File[] list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
-			table = bsw.handleFile(list);
+			table = bsw.handleListFile(list);
 			
 			FileSaveLoad.save(table, "tmp/", "chunk.tmp");
 			FileSaveLoad.save(bsw.getFileHashIndex(), "tmp/", "index.tmp");
