@@ -106,7 +106,7 @@ public class BasicSlidingWindowChunk extends Chunk{
 					if (fisForChunk.read(chunk) != -1) {
 						chunkHashValue = getChunkHash(chunk);
 						hashList.add(chunkHashValue);
-						
+//						System.out.println(new String(chunk, "UTF-8"));
 						if (!chunkData.containsKey(chunkHashValue)) {
 							// System.out.println(new String(chunk));
 							chunkData.put(chunkHashValue, new String(chunk, "UTF-8"));

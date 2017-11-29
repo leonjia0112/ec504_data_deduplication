@@ -26,7 +26,7 @@ public class FileSaveLoad {
 	public static void save(Object t, String path, String name) throws IOException {
 		File dir = new File(path);
 		if(!dir.exists()) {
-			System.out.println("This directory doesn't exist.");
+			System.out.println("Creating new directory.");
 			dir.mkdirs();
 		}
 		String output = path + name;

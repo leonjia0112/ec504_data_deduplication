@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import Chunk.BasicSlidingWindowChunk;
 import FileIO.ChunkFileHandler;
@@ -13,12 +14,36 @@ import utils.Utilities;
 
 public class DedupExecution {
 
+	private long originalFileSize = 0;
+	private long compressedSize = 0;
+	
 	/**
 	 * Constructor
 	 */
-	public void DedupExecution() {
+	public DedupExecution() {
 		// initialize a new chunkFileHandler
 		// remember each execution log
+	}
+
+	/**
+	 * Add all the files until target directory
+	 * 
+	 * @param locker name, locker is a directory format
+	 * @param target path
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void add(String inputLocker, String inputFile) throws IOException, ClassNotFoundException {
+		// originalFileSize = FileUtils.sizeOfDirectory(new File("C:/Windows/folder"));
+		File input = new File(inputFile);
+		if(!input.isHidden()){
+			if(input.isDirectory()){
+				addDirectory(inputLocker, inputFile);
+			}else if(input.isFile()){
+				String[] components = Utilities.split(inputFile);
+				addSingleFile(inputLocker, components[0], components[1]);
+			}
+		}
 	}
 
 	/**
@@ -30,19 +55,17 @@ public class DedupExecution {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void add(String l, String path, String fileName) throws ClassNotFoundException, IOException {
-		File locker = new File("locker/" + l);
+	private void addSingleFile(String inputLocker, String path, String fileName) throws ClassNotFoundException, IOException {
+		File locker = new File("locker/" + inputLocker);
 		File f = new File(fileName);
 		if(locker.exists()) {
-			ChunkFileHandler cfh = new ChunkFileHandler(l);
+			ChunkFileHandler cfh = new ChunkFileHandler(inputLocker);
 
 			// create chunk object with existing data
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk(cfh.getChunkTable(), cfh.getFileIndexList());
 			bsw.handleSingleFile(f);
 
-			// save to locker
-			FileSaveLoad.save(bsw.getTable(), "locker/" + locker.getPath() + "/", "table.tmp");
-			FileSaveLoad.save(bsw.getFileHashIndex(), "locker/" + locker.getPath() + "/", "index.tmp");
+			saveLockerContent(inputLocker, bsw.getTable(), bsw.getFileHashIndex());
 		}else {
 			// create new locker
 			locker.mkdirs();
@@ -51,45 +74,54 @@ public class DedupExecution {
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			bsw.handleSingleFile(f);;
 
-			// save to locker
-			FileSaveLoad.save(bsw.getTable(), "locker/" + locker.getPath() + "/", "table.tmp");
-			FileSaveLoad.save(bsw.getFileHashIndex(), "locker/" + locker.getPath() + "/", "index.tmp");
+			saveLockerContent(inputLocker, bsw.getTable(), bsw.getFileHashIndex());
 		}
 	}
 
-	/**
-	 * Add all the files until target directory
-	 * 
-	 * @param locker name
-	 * @param target path
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public void add(String l, String path) throws IOException, ClassNotFoundException {
-		File locker = new File(l);
+	private void addDirectory(String inputLocker, String path) throws ClassNotFoundException, IOException{
+		File locker = new File("locker/" + inputLocker);
+		
+		// debug
+		System.out.println(path);
+		
 		FileInputHandler fih = new FileInputHandler(path);
+		System.out.println("show input files.\n" + fih.toString());
 		if(locker.exists()) {
 
-			ChunkFileHandler cfh = new ChunkFileHandler(l);
+			ChunkFileHandler cfh = new ChunkFileHandler(inputLocker);
 
 			// create chunk object with existing data
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk(cfh.getChunkTable(), cfh.getFileIndexList());
 			bsw.handleListFile(fih.getFiles());
 
-			// save to locker
-			FileSaveLoad.save(bsw.getTable(), "locker/" + locker.getPath() + "/", "table.tmp");
-			FileSaveLoad.save(bsw.getFileHashIndex(), "locker/" + locker.getPath() + "/", "index.tmp");
+			saveLockerContent(inputLocker, bsw.getTable(), bsw.getFileHashIndex());
 		}else {
 			// create new locker
 			locker.mkdirs();
-
+			
+			System.out.println("this should print");
 			// create new chunking object with empty content
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			bsw.handleListFile(fih.getFiles());
 
-			// save to locker
-			FileSaveLoad.save(bsw.getTable(), "locker/" + locker.getPath() + "/", "table.tmp");
-			FileSaveLoad.save(bsw.getFileHashIndex(), "locker/" + locker.getPath() + "/", "index.tmp");
+			saveLockerContent(inputLocker, bsw.getTable(), bsw.getFileHashIndex());
+		}
+	}
+
+	private void saveLockerContent(String locker, Hashtable<String, String> t, HashMap<String, ArrayList<String>> m) throws IOException{
+		FileSaveLoad.save(t, "locker/" + locker, "chunk.tmp");
+		FileSaveLoad.save(m, "locker/" + locker, "index.tmp");
+	}
+
+	public void delete(String inputLocker, String inputFile) throws ClassNotFoundException, IOException{
+		File input = new File(inputFile);
+		if(input.exists() && !input.isHidden()){
+			if(input.isDirectory()){
+				deleteDirectory(inputLocker, inputFile);
+			}else if(input.isFile()){
+				String[] components = Utilities.split(inputFile);
+				deleteSingleFile(inputLocker, components[0], components[1]);
+			}
 		}
 	}
 
@@ -102,15 +134,15 @@ public class DedupExecution {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void delete(String l, String path, String fileName) throws ClassNotFoundException, IOException {
-		File locker = new File("locker/" + l);
+	private void deleteSingleFile(String inputLocker, String path, String fileName) throws ClassNotFoundException, IOException {
+		File locker = new File("locker/" + inputLocker);
 		if(locker.exists()){
-			ChunkFileHandler cfh = new ChunkFileHandler(l);
+			ChunkFileHandler cfh = new ChunkFileHandler(inputLocker);
 			cfh.deleteFile(path+fileName);
 		}else{
 			System.out.println("locker doesn't exist. No file deleted.");
 		}
-		
+
 	}
 
 	/**
@@ -121,10 +153,10 @@ public class DedupExecution {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public void delete(String l, String path) throws ClassNotFoundException, IOException {
-		File locker = new File("locker/" + l);
+	private void deleteDirectory(String inputLocker, String path) throws ClassNotFoundException, IOException {
+		File locker = new File("locker/" + inputLocker);
 		if(locker.exists()){
-			ChunkFileHandler cfh = new ChunkFileHandler(l);
+			ChunkFileHandler cfh = new ChunkFileHandler(inputLocker);
 			cfh.deleteDir(path);
 		}else{
 			System.out.println("locker doesn't exist. No file deleted.");
@@ -136,9 +168,31 @@ public class DedupExecution {
 	 * 
 	 * @param locker name
 	 */
-	public void delete(String l){
+	private void deleteLocker(String l){
 		File locker = new File("locker/" + l);
 		locker.delete();
+	}
+
+
+	public void get(String inputLocker, String inputFile, String targetPath) throws ClassNotFoundException, IOException{
+		File locker = new File("locker/" + inputLocker);
+		File f = new File(inputLocker);
+		if(locker.exists() && !locker.isHidden()){
+			if(isFile(inputFile)){
+				System.out.println("This is a file.");
+				getDirectory(inputLocker, inputFile, targetPath);
+			}else{
+				System.out.println("This is a directory.");
+				String[] components = Utilities.split(inputFile);
+				getSingleFile(inputLocker, components[0], components[1], targetPath);
+			}
+		}else{
+			System.out.println("Locker doesn't exist. Please input exist locker.");
+		}
+	}
+
+	private boolean isFile(String s){
+		return s.lastIndexOf("/") < 0;
 	}
 	
 	/**
@@ -148,13 +202,13 @@ public class DedupExecution {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void get(String locker, String path, String fileName, String targetDir) throws ClassNotFoundException, IOException {
+	public void getSingleFile(String locker, String path, String fileName, String targetDir) throws ClassNotFoundException, IOException {
 		ChunkFileHandler cfh = new ChunkFileHandler(locker);
 		String output = cfh.retrieveFile(path +  fileName);
 		Utilities.saveTextFile(output, targetDir);
 	}
 
-	public void get(String locker, String path, String targetDir) throws ClassNotFoundException, IOException {
+	public void getDirectory(String locker, String path, String targetDir) throws ClassNotFoundException, IOException {
 		ChunkFileHandler cfh = new ChunkFileHandler(locker);
 		HashMap<String, ArrayList<String>> fileList = cfh.getFileIndexList();
 		ArrayList<String> output = cfh.retrieveDir(path);
@@ -185,8 +239,8 @@ public class DedupExecution {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public String showFile(String l) throws ClassNotFoundException, IOException {
-		ChunkFileHandler cfh = new ChunkFileHandler(l);
+	public String showFile(String locker) throws ClassNotFoundException, IOException {
+		ChunkFileHandler cfh = new ChunkFileHandler(locker);
 		return cfh.getNames();
 	}
 

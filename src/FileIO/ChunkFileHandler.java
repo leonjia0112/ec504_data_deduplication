@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,9 +32,13 @@ public class ChunkFileHandler {
 	public ChunkFileHandler(String l) throws ClassNotFoundException, IOException {
 		locker = l;
 		File loc = new File("locker/" + locker);
+		
+//		System.out.println("locker/" + locker);
+//		System.out.println(loc.isDirectory());
+//		System.out.println(loc.exists());
 		if(loc.exists() && loc.isDirectory()){
 			chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
-			fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "tmp/index.tmp");
+			fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "index.tmp");
 		}else if(!loc.exists() && loc.isDirectory()){
 			loc.mkdirs();
 			chunkTable = new Hashtable<String, String>();
@@ -186,7 +191,11 @@ public class ChunkFileHandler {
 			result.add(Utilities.split(s)[1]);
 		}
 		Collections.sort(result);
-		return result.toString();
+		String output = "";
+		for(String s : result){
+			output += s + "\n";
+		}
+		return output;
 	}
 
 	/**
@@ -198,7 +207,11 @@ public class ChunkFileHandler {
 			result.add(s);
 		}
 		Collections.sort(result);
-		return result.toString();
+		String output = "";
+		for(String s : result){
+			output += s + "\n";
+		}
+		return output;
 	}
 	
 	// Fields

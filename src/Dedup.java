@@ -27,7 +27,7 @@ public class Dedup {
 			case "-a":
 				if(args.length == 3){
 					System.out.println("Adding file.");
-					de.add(args[1], args[2]);
+					de.add(args[1] + "/", args[2]);
 				}else{
 					System.out.println("Invalid -a arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
@@ -36,7 +36,7 @@ public class Dedup {
 			case "-d":
 				if(args.length == 3){
 					System.out.println("Deleting file.");
-					de.delete(args[1], args[2]);
+					de.delete(args[1] + "/", args[2]);
 				}else{
 					System.out.println("Invalid -d arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
@@ -45,7 +45,7 @@ public class Dedup {
 			case "-r":
 				if(args.length == 4){
 					System.out.println("Retrieving file.");
-					de.get(args[1], args[2], args[3]);
+					de.get(args[1] + "/", args[2], args[3]);
 				}else{
 					System.out.println("Invalid -r arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
@@ -58,7 +58,7 @@ public class Dedup {
 						System.out.println(de.showLocker());
 					}else if(args[1].compareTo("-file") == 0){
 						System.out.println("Here are all the files in locker: " + args[2]);
-						System.out.println(de.showFile(args[2]));
+						System.out.println(de.showFile(args[2] + "/"));
 					}
 				}else{
 					System.out.println("Need more arguments for -s option.");

@@ -13,8 +13,9 @@ public class Utilities {
 	 * @return array with file path and file name
 	 */
 	public static String[] split(String s){
+		System.out.println(s);
 		File f = new File(s);
-		if(f.isDirectory()){
+		if(f.isFile()){
 			int splitIndex = s.lastIndexOf('/');
 			String[] result = {s.substring(0, splitIndex+1), s.substring(splitIndex+1)};
 			return result;
@@ -26,6 +27,7 @@ public class Utilities {
 	
 	
 	public static void saveTextFile(String content, String path, String fileName) throws FileNotFoundException{
+		System.out.print("saving " + fileName + " to " + path);
 		PrintWriter out = new PrintWriter(path + fileName);
 		out.write(content);
 		out.close();

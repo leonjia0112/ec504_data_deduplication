@@ -12,7 +12,7 @@ import utils.FileSaveLoad;
 public class ChunkFileTest {
 	public static void main(String args[]) throws IOException{
 		if(args.length == 1) {
-			//String dir = "/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/src/ec504_sample_file";
+			//String dir = "/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/src/ec504_sample_file/";
 			
 			FileInputHandler fh = new FileInputHandler(args[0]);
 			// FileHandler fh = new FileHandler(dir);

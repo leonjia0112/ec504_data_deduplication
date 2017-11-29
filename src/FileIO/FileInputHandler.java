@@ -19,6 +19,7 @@ public class FileInputHandler {
 	public FileInputHandler(String inputDirectory){
 		root = inputDirectory;
 		File rootDir = new File(inputDirectory);
+		System.out.println(rootDir.getName());
 		fileList = scanFiles(rootDir);
 		totalFileNumber = fileList.size();
 	}
@@ -30,6 +31,7 @@ public class FileInputHandler {
 	 * @return all files in this directory and sub-directories
 	 */
 	private HashSet<File> scanFiles(File dir){
+		System.out.println(dir.exists());
 		if(dir.isDirectory()){
 			File[] list = dir.listFiles();
 			HashSet<File> fileSet = new HashSet<File>();
