@@ -1,9 +1,9 @@
 /.DS_Store
 /._.DS_Store
 /Chunk/
+/Dedup.class
 /FileIO/
 /ec504_sample_file/
-/runnable/
-/unit_test/
-/Dedup.class
 /execution/
+/unit_test/
+/utils/

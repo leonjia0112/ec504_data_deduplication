@@ -12,8 +12,8 @@ public class FileRetriveTest {
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		System.out.println("File retrieve test.");
-		ChunkFileHandler cfh = new ChunkFileHandler();
-		String file1 = cfh.getFile("file1.txt");
+		ChunkFileHandler cfh = new ChunkFileHandler("locker1");
+		String file1 = cfh.retrieveFile("file1.txt");
 		if(file1 != null) {
 			System.out.println("File successfully retrieved.");
 		}

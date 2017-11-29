@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 public abstract class Chunk {
@@ -36,7 +37,7 @@ public abstract class Chunk {
 	}
 
 	// These methods need to be implemented
-	public abstract void handleListFile(File[] inputFile);
+	public abstract void handleListFile(HashSet<File> inputFile);
 	public abstract void handleSingleFile(File file);
 	
 	/**

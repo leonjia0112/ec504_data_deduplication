@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 /**
@@ -36,8 +37,8 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * @param list of file object
 	 */
 	@Override
-	public void handleListFile(File[] inputFile) {
-		for(File f: inputFile) {
+	public void handleListFile(HashSet<File> hashSet) {
+		for(File f: hashSet) {
 			chunkOneFile(f);
 		}
 	}
@@ -129,8 +130,8 @@ public class BasicSlidingWindowChunk extends Chunk{
 				System.out.println(duplicateChunkCount + " duplicated chunks in: " + inputFile.getName());
 			}
 			
-			// store file hash index
-			fileHashIndex.put(inputFile.getName(), hashList);
+			// store file hash absolute path and data hash in order
+			fileHashIndex.put(inputFile.getAbsolutePath(), hashList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

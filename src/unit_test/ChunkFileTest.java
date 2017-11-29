@@ -1,4 +1,4 @@
-package execution;
+package unit_test;
 
 import java.beans.XMLEncoder;
 import java.io.*;
@@ -7,8 +7,9 @@ import java.util.*;
 // Import Chunk package
 import Chunk.*;
 import FileIO.*;
+import utils.FileSaveLoad;
 
-public class DedupRunnable {
+public class ChunkFileTest {
 	public static void main(String args[]) throws IOException{
 		if(args.length == 1) {
 			//String dir = "/home/leojia/Desktop/JavaWorkSpace/ec504_project_pre_1/src/ec504_sample_file";
@@ -17,7 +18,7 @@ public class DedupRunnable {
 			// FileHandler fh = new FileHandler(dir);
 			
 			Hashtable<String, String> table = new Hashtable<String, String>();
-			File[] list = fh.getFiles();
+			HashSet<File> list = fh.getFiles();
 			BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk();
 			bsw.handleListFile(list);
 			

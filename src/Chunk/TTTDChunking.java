@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 /**
@@ -25,7 +26,7 @@ public class TTTDChunking extends Chunk{
 	}
 
 	@Override
-	public void handleListFile(File[] inputFile) {
+	public void handleListFile(HashSet<File> inputFile) {
 		for(File f: inputFile) {
 			if(f.isFile() && !f.isHidden()) {
 				initilizeParam();

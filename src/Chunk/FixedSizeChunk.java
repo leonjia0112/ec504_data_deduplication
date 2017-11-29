@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 /**
@@ -26,7 +27,7 @@ public class FixedSizeChunk extends Chunk{
 	}
 
 	@Override
-	public void handleListFile(File[] inputFile) {
+	public void handleListFile(HashSet<File> inputFile) {
 		for(File f : inputFile){
 			int index = 0;
 			int count = 0;
