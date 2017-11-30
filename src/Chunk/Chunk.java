@@ -1,6 +1,7 @@
 package Chunk;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ public abstract class Chunk {
 	}
 
 	// These methods need to be implemented
-	public abstract void handleListFile(HashSet<File> inputFile);
-	public abstract void handleSingleFile(File file);
+	public abstract void handleListFile(HashSet<File> inputFile) throws IOException;
+	public abstract void handleSingleFile(File file) throws IOException;
 	
 	/**
 	 * @return table contains both hash value and its data 

@@ -1,4 +1,4 @@
-package FileIO;
+package utils;
 
 import java.io.File;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class FileInputHandler {
 		File rootDir = new File(inputDirectory);
 		System.out.println(rootDir.getName());
 		fileList = scanFiles(rootDir);
-		totalFileNumber = fileList.size();
+		fileList.size();
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class FileInputHandler {
 		root = inputDirectory;
 		File rootDir = new File(inputDirectory);
 		fileList = scanFiles(rootDir);
-		totalFileNumber = fileList.size();
+		fileList.size();
 	}
 	
 	/**
@@ -110,5 +110,4 @@ public class FileInputHandler {
 	// Fields
 	private HashSet<File> fileList;
 	private String root;
-	private int totalFileNumber;
 }

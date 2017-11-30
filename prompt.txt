@@ -1,0 +1,22 @@
+General Options:
+-a, -add		Add File/s to locker
+				<locker> <file path>			Add one file to target locker
+				<locker> <directory path>		Add all files in directory to target locker
+
+-d, -delete 	Delete File/s from locker, or delete locker
+				<locker> 						Delete whole locker
+				<locker> <file path>			Delete one file from target locker, full absolute
+												original path of the file
+				<locker> <directory path>		Delete all the file in the same original path from
+												target locker
+
+-r, -retrieve	Retrieve File/s from locker
+				<locker> 						Retrieve whole locker
+				<locker> <file path>			Retrieve one file from target locker, full absolute
+												original path of the file
+				<locker> <directory path>		Retrieve all the file in the same original path 
+												from target locker
+
+-s, -show       Show content
+				-locker							Display all lockers
+				-file <locker>					Display all files in target locker

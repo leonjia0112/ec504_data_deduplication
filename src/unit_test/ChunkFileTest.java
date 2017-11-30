@@ -6,7 +6,7 @@ import java.util.*;
 
 // Import Chunk package
 import Chunk.*;
-import FileIO.*;
+import utils.FileInputHandler;
 import utils.FileSaveLoad;
 
 public class ChunkFileTest {

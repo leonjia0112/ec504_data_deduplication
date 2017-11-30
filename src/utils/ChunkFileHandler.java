@@ -1,14 +1,7 @@
-package FileIO;
+package utils;
 
-import java.beans.XMLDecoder;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,8 +9,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import Chunk.BasicSlidingWindowChunk;
-import utils.FileSaveLoad;
-import utils.Utilities;
 
 public class ChunkFileHandler {
 
@@ -29,22 +20,23 @@ public class ChunkFileHandler {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public ChunkFileHandler(String l) throws ClassNotFoundException, IOException {
-		locker = l;
+	public ChunkFileHandler(String inputLocker) throws ClassNotFoundException, IOException {
+		locker = inputLocker;
 		File loc = new File("locker/" + locker);
-		
-//		System.out.println("locker/" + locker);
-//		System.out.println(loc.isDirectory());
-//		System.out.println(loc.exists());
 		if(loc.exists() && loc.isDirectory()){
-			chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
-			fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "index.tmp");
+			if(new File("locker/" + locker + "chunk.tmp").exists() && 
+					new File("locker/" + locker + "index.tmp").exists()){
+				chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
+				fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "index.tmp");
+			}else{
+				System.out.println("Empty locker. Exiting.");
+			}
 		}else if(!loc.exists() && loc.isDirectory()){
 			loc.mkdirs();
 			chunkTable = new Hashtable<String, String>();
 			fileIndexList = new HashMap<String, ArrayList<String>>();
 		}else{
-			System.out.println("locker name must be a directory.");
+			System.out.println("locker name must be a directory to initialize.");
 		}
 	}
 
@@ -57,33 +49,49 @@ public class ChunkFileHandler {
 	public String retrieveFile(String fileName) {
 		if(fileIndexList.containsKey(fileName)) {
 			System.out.println("File " + fileName + " exists.");
-			return getFileHelper(fileName);
+			return retrieveFileHelper(fileName);
 		}else {
-			System.out.println("File doesn't exist.");
+			System.out.println("File " + fileName + " doesn't exist.");
+			System.out.println("Can't not retrieve file.");
 			return null;
 		}
 	}
 	
-	public ArrayList<String> retrieveDir(String dir){
-		ArrayList<String> result = new ArrayList<String>();
+	/**
+	 * Retrieve all the file under the same original directory
+	 * 
+	 * @param original directory
+	 * @return map contains both original file name (original absolute file path) and
+	 * 			file content
+	 */
+	public HashMap<String, String> retrieveDir(String dir){
+		HashMap<String, String> result = new HashMap<String, String>();
 		for(String s : fileIndexList.keySet()){
-			if(Utilities.split(s)[0].compareTo(dir) == 0){
-				result.add(s);
+			String  originalPath = Utilities.split(s)[0];
+			if(originalPath.length() >= dir.length() && 
+					originalPath.substring(0, dir.length()).compareTo(dir) == 0 ){
+				result.put(s, retrieveFileHelper(s));
 			}
 		}
 		return result;
 	}
 	
 	/**
-	 * reload chunk data and file index from locker
+	 * Look for the file and assemble the file content by the content hash
+	 * values.
 	 * 
-	 * @throws ClassNotFoundException
-	 * @throws IOException
+	 * @param full name of the file, absolute path
+	 * @return file content
 	 */
-	public void reloadFiles() throws ClassNotFoundException, IOException {
-		chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
-		fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "index.tmp");
+	private String retrieveFileHelper(String name) {
+		ArrayList<String> indexList = fileIndexList.get(name);
+		String content = "";
+		for(String s: indexList) {
+			content += chunkTable.get(s);
+		}
+		return content;
 	}
+	
 
 	/**
 	 * Delete specific file based on the file name, pass if the file dosen't exist
@@ -122,7 +130,7 @@ public class ChunkFileHandler {
 			fileIndexList.remove(fileName);
 
 		}else {
-			System.out.println("File doesn't exist.");
+			System.out.println("File " + fileName + "doesn't exist.");
 		}
 	}
 
@@ -131,41 +139,35 @@ public class ChunkFileHandler {
 	 * 
 	 * @param original path for file
 	 */
-	public void deleteDir(String path) {
+	public void deleteDir(String dir) {
+		HashSet<String> deleteList = new HashSet<String>();
+		
+		// search for all the file file that needs to be deleted
 		for(String s : fileIndexList.keySet()){
-			String dir = Utilities.split(s)[0];
-			if(dir.compareTo(path) == 0){
-				deleteFile(s);
+			String  originalPath = Utilities.split(s)[0];
+			if(originalPath.length() >= dir.length() && 
+					originalPath.substring(0, dir.length()).compareTo(dir) == 0 ){
+				deleteList.add(s);
 			}
+		}
+		
+		// delete those files
+		for(String d: deleteList){
+			deleteFile(d);
 		}
 	}
 
 	/**
-	 * Add more file to the chunk table.
+	 * Add one file to the chunk table.
 	 * 
 	 * @param f
+	 * @throws IOException 
 	 */
-	public void addFile(File f){
+	public void addFile(File f) throws IOException{
 		BasicSlidingWindowChunk bsw = new BasicSlidingWindowChunk(chunkTable, fileIndexList);
 		bsw.handleSingleFile(f);
 		chunkTable = bsw.getTable();
 		fileIndexList = bsw.getFileHashIndex();
-	}
-
-	/**
-	 * Look for the file and assemble the file content by the content hash
-	 * values.
-	 * 
-	 * @param name
-	 * @return file content
-	 */
-	private String getFileHelper(String name) {
-		ArrayList<String> indexList = fileIndexList.get(name);
-		String file = "";
-		for(String s: indexList) {
-			file += chunkTable.get(s);
-		}
-		return file;
 	}
 
 	/**
@@ -212,6 +214,27 @@ public class ChunkFileHandler {
 			output += s + "\n";
 		}
 		return output;
+	}
+	
+	
+	/**
+	 * reload chunk data and file index from locker
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void reloadFiles() throws ClassNotFoundException, IOException {
+		chunkTable = FileSaveLoad.loadChunkTable("locker/" + locker + "chunk.tmp");
+		fileIndexList = FileSaveLoad.loadIndexFileList("locker/" + locker + "index.tmp");
+	}
+
+	/**
+	 * 
+	 * @throws IOException
+	 */
+	public void resaveFiles() throws IOException {
+		FileSaveLoad.save(chunkTable, "locker/" + locker, "chunk.tmp");
+		FileSaveLoad.save(fileIndexList, "locker/" + locker, "index.tmp");
 	}
 	
 	// Fields

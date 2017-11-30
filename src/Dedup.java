@@ -1,57 +1,72 @@
 import java.io.IOException;
-
 import execution.DedupExecution;
 
+/**
+ * Command line user interface for this data deduplication application
+ * 
+ * @author Pei Jia
+ */
 public class Dedup {
+	private static String helpPrompt = "General Options:\n"
+			+ "\n  -a, -add\tAdd File/s to locker\n"
+			+ "\t\t<locker> <file path>      Add one file to target locker\n"
+			+ "\t\t<locker> <directory path> Add all files in directory to target locker\n"
+			+ "\n  -d, -delete\tDelete File/s from locker, or delete locker\n"
+			+ "\t\t<locker>\t\t  Delete whole locker\n"
+			+ "\t\t<locker> <file path>\t  Delete one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker> <directory path> Delete all the file in the same original path from target locker\n"
+			+ "\n  -r, -retrieve\tRetrieve File/s from locker\n"
+			+ "\t\t<locker>\t\t  Retrieve whole locker\n"
+			+ "\t\t<locker> <file path>\t  Retrieve one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker> <directory path> Retrieve all the file in the same original path from target locker\n"
+			+ "\n  -s, -show\tShow content\n"
+			+ "\t\t-locker\t\t\t  Display all lockers\n"
+			+ "\t\t-file <locker>\t\t  Display all files in target locker\n";
+			
 
-	public static String helpPrompt = 
-			"\nAdd one file or a directories of files to a locker.\n"
-			+ "  -a\t[locker] [file/directory]\n"
-			+ "\nDelete one file or all the files under the same original directories from a locker\n"
-			+ "  -d\t[locker] [file/directory]\n"
-			+ "\nRetrive one file or all the files under the same original directories from a locker\n"
-			+ "  -r\t[locker] [file/directory] [target directory]\n"
-			+ "\nDisplay all lockers.\n"
-			+ "  -s\t-locker\n"
-			+ "\nDisplay all files in one locker.\n"
-			+ "  -s\t-file [locker]\n"
-			+ "\nHelp\n"
-			+ "  -h\t show help prompt.\n";
-
+	/**
+	 * Command line user interface, supporting following file storage operations. Addition, deletion
+	 * retrieve, and display content.
+	 * 
+	 * @param input command line arguments to use the interface
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-
 		if(args.length > 0) {
 			DedupExecution de = new DedupExecution();
-
 			switch(args[0]) {
-			case "-a":
+			case "-a": // add option
 				if(args.length == 3){
-					System.out.println("Adding file.");
+					System.out.println("Adding file/s.");
 					de.add(args[1] + "/", args[2]);
 				}else{
 					System.out.println("Invalid -a arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-d":
+			case "-d": // delete option
 				if(args.length == 3){
-					System.out.println("Deleting file.");
+					System.out.println("Deleting file/s.");
 					de.delete(args[1] + "/", args[2]);
+				}else if(args.length == 2){
+					System.out.println("Deleting locker.");
+					de.deleteLocker(args[1] + "/");
 				}else{
 					System.out.println("Invalid -d arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-r":
+			case "-r": // retrieve option
 				if(args.length == 4){
-					System.out.println("Retrieving file.");
-					de.get(args[1] + "/", args[2], args[3]);
+					System.out.println("Retrieving file/s.");
+					de.retrieve(args[1] + "/", args[2], args[3]);
 				}else{
 					System.out.println("Invalid -r arguments number. Please Follow instruction.\n");
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-s":
+			case "-s": // show option
 				if(args.length >= 2){
 					if(args[1].compareTo("-locker") == 0){
 						System.out.println("Here are all the existing lockers.");
@@ -62,9 +77,10 @@ public class Dedup {
 					}
 				}else{
 					System.out.println("Need more arguments for -s option.");
+					System.out.println(helpPrompt);
 				}
 				break;
-			case "-h":
+			case "-h": // help option
 				System.out.println(helpPrompt);
 				break;
 			default: 
@@ -77,5 +93,4 @@ public class Dedup {
 			System.out.println(helpPrompt);
 		}
 	}
-
 }

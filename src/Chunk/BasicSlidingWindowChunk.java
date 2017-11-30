@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 
+import utils.Utilities;
+
 /**
  * This class using Basic Sliding Window algorithm to create chunk for each
  * file. This is a content define chunking algorithm that has variable chunk
@@ -35,9 +37,10 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * with hash value and chunk data in one table.
 	 * 
 	 * @param list of file object
+	 * @throws IOException 
 	 */
 	@Override
-	public void handleListFile(HashSet<File> hashSet) {
+	public void handleListFile(HashSet<File> hashSet) throws IOException {
 		for(File f: hashSet) {
 			chunkOneFile(f);
 		}
@@ -47,9 +50,10 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * This method perform chunking of single file instead of a list of file
 	 * 
 	 * @param single File object
+	 * @throws IOException 
 	 */
 	@Override
-	public void handleSingleFile(File file) {
+	public void handleSingleFile(File file) throws IOException {
 		chunkOneFile(file);
 	}
 	
@@ -57,8 +61,9 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * Chunk single file
 	 * 
 	 * @param single file
+	 * @throws IOException 
 	 */
-	private void chunkOneFile(File f) {
+	private void chunkOneFile(File f) throws IOException {
 		if(f.isFile() && !f.isHidden()) {
 			initilizeParam();
 			makeChunk(f);
@@ -70,8 +75,13 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * to a hash table to store the chunk hash and chunk data.
 	 * 
 	 * @param inputFile that needs to be chunked
+	 * @throws IOException 
 	 */
-	private void makeChunk(File inputFile) {
+	private void makeChunk(File inputFile) throws IOException {
+		if(!Utilities.isPureAsciiFile(inputFile.getAbsolutePath())){
+			System.out.println("Can't chunk non ASCII file.");
+			return;
+		}
 		ArrayList<String> hashList = new ArrayList<String>();
 		FileInputStream fis = null;
 		FileInputStream fisForChunk = null;
@@ -106,9 +116,13 @@ public class BasicSlidingWindowChunk extends Chunk{
 					if (fisForChunk.read(chunk) != -1) {
 						chunkHashValue = getChunkHash(chunk);
 						hashList.add(chunkHashValue);
+						
+						// DEBUG !!!
 //						System.out.println(new String(chunk, "UTF-8"));
 						if (!chunkData.containsKey(chunkHashValue)) {
-							// System.out.println(new String(chunk));
+							
+							// DEBUG !!!
+//							System.out.println(new String(chunk));
 							chunkData.put(chunkHashValue, new String(chunk, "UTF-8"));
 						} else {
 							duplicateChunkCount++;

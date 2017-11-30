@@ -57,8 +57,7 @@ public class TTTDChunking extends Chunk{
 			
 			int chunkNumberCount = 0; // count chunks
 			int duplicateChunkCount = 0; // count duplicate
-			int breakpoint = 1 << 11;
-			breakpoint--;
+			int breakpoint = 2047;
 			boolean firstChunk = true;
 			long totalByte = isForHash.available();
 			String chunkHashValue = null;

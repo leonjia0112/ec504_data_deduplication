@@ -3,7 +3,7 @@ package unit_test;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import FileIO.ChunkFileHandler;
+import utils.ChunkFileHandler;
 import utils.FileSaveLoad;
 
 public class FileDeleteTest {
