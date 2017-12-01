@@ -221,9 +221,11 @@ public class DedupExecution {
 	private void retrieveSingleFile(String locker, String fileAbsolutePath, String targetDir) throws ClassNotFoundException, IOException {
 		ChunkFileHandler cfh = new ChunkFileHandler(locker);
 		String output = cfh.retrieveFile(fileAbsolutePath);
-		
-		// save file
-		Utilities.saveTextFile(output, targetDir, Utilities.split(fileAbsolutePath)[1]);
+		if(output != null){
+			
+			// save file
+			Utilities.saveTextFile(output, targetDir, Utilities.split(fileAbsolutePath)[1]);
+		}
 	}
 
 	/**

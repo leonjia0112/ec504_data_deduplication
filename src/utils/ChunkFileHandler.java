@@ -84,12 +84,17 @@ public class ChunkFileHandler {
 	 * @return file content
 	 */
 	private String retrieveFileHelper(String name) {
-		ArrayList<String> indexList = fileIndexList.get(name);
-		String content = "";
-		for(String s: indexList) {
-			content += chunkTable.get(s);
+		if(fileIndexList.containsKey(name)){
+			ArrayList<String> indexList = fileIndexList.get(name);
+			String content = "";
+			for(String s: indexList) {
+				content += chunkTable.get(s);
+			}
+			return content;
+		}else{
+			return null;
 		}
-		return content;
+		
 	}
 	
 

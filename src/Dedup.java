@@ -9,19 +9,20 @@ import execution.DedupExecution;
 public class Dedup {
 	private static String helpPrompt = "General Options:\n"
 			+ "\n  -a, -add\tAdd File/s to locker\n"
-			+ "\t\t<locker> <file path>      Add one file to target locker\n"
-			+ "\t\t<locker> <directory path> Add all files in directory to target locker\n"
+			+ "\t\t<locker> <file path>\n\t\t  Add one file to target locker\n"
+			+ "\t\t<locker> <directory path>\n\t\t  Add all files in directory to target locker\n"
 			+ "\n  -d, -delete\tDelete File/s from locker, or delete locker\n"
-			+ "\t\t<locker>\t\t  Delete whole locker\n"
-			+ "\t\t<locker> <file path>\t  Delete one file from target locker, full absolute original path of the file\n"
-			+ "\t\t<locker> <directory path> Delete all the file in the same original path from target locker\n"
+			+ "\t\t<locker>\n\t\t  Delete whole locker\n"
+			+ "\t\t<locker> <file path>\n\t\t  Delete one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker> <directory path>\n\t\t  Delete all the file in the same original path from target locker\n"
 			+ "\n  -r, -retrieve\tRetrieve File/s from locker\n"
-			+ "\t\t<locker>\t\t  Retrieve whole locker\n"
-			+ "\t\t<locker> <file path>\t  Retrieve one file from target locker, full absolute original path of the file\n"
-			+ "\t\t<locker> <directory path> Retrieve all the file in the same original path from target locker\n"
+//			+ "\t\t<locker>\t\t  Retrieve whole locker\n"
+			+ "\t\t<locker> <file path> <target path>\n\t\t  Retrieve one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker> <directory path> <target path>\n\t\t  Retrieve all the file in the same original path from target locker\n"
 			+ "\n  -s, -show\tShow content\n"
-			+ "\t\t-locker\t\t\t  Display all lockers\n"
-			+ "\t\t-file <locker>\t\t  Display all files in target locker\n";
+			+ "\t\t-locker\t\t  Display all lockers\n"
+			+ "\t\t-file <locker>\t  Display all files in target locker\n"
+			+ "\n  -h, -help\tHelp Prompt";
 			
 
 	/**
@@ -36,7 +37,8 @@ public class Dedup {
 		if(args.length > 0) {
 			DedupExecution de = new DedupExecution();
 			switch(args[0]) {
-			case "-a": // add option
+			case "-a":
+			case "-add": // add option
 				if(args.length == 3){
 					System.out.println("Adding file/s.");
 					de.add(args[1] + "/", args[2]);
@@ -45,7 +47,8 @@ public class Dedup {
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-d": // delete option
+			case "-d": 
+			case "-delete": // delete option
 				if(args.length == 3){
 					System.out.println("Deleting file/s.");
 					de.delete(args[1] + "/", args[2]);
@@ -57,7 +60,8 @@ public class Dedup {
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-r": // retrieve option
+			case "-r": 
+			case "-retrieve": // retrieve option
 				if(args.length == 4){
 					System.out.println("Retrieving file/s.");
 					de.retrieve(args[1] + "/", args[2], args[3]);
@@ -66,7 +70,8 @@ public class Dedup {
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-s": // show option
+			case "-s": 
+			case "-show": // show option
 				if(args.length >= 2){
 					if(args[1].compareTo("-locker") == 0){
 						System.out.println("Here are all the existing lockers.");
@@ -80,7 +85,8 @@ public class Dedup {
 					System.out.println(helpPrompt);
 				}
 				break;
-			case "-h": // help option
+			case "-h": 
+			case "-help": // help option
 				System.out.println(helpPrompt);
 				break;
 			default: 
