@@ -9,19 +9,19 @@ import execution.DedupExecution;
 public class Dedup {
 	private static String helpPrompt = "General Options:\n"
 			+ "\n  -a, -add\tAdd File/s to locker\n"
-			+ "\t\t<locker> <file path>\n\t\t  Add one file to target locker\n"
-			+ "\t\t<locker> <directory path>\n\t\t  Add all files in directory to target locker\n"
+			+ "\t\t<locker name> <file input path>\n\t\t  Add one file to target locker\n"
+			+ "\t\t<locker> <directory input path>\n\t\t  Add all files in directory to target locker\n"
 			+ "\n  -d, -delete\tDelete File/s from locker, or delete locker\n"
-			+ "\t\t<locker>\n\t\t  Delete whole locker\n"
-			+ "\t\t<locker> <file path>\n\t\t  Delete one file from target locker, full absolute original path of the file\n"
-			+ "\t\t<locker> <directory path>\n\t\t  Delete all the file in the same original path from target locker\n"
+			+ "\t\t<locker name>\n\t\t  Delete whole locker\n"
+			+ "\t\t<locker name> <file path>\n\t\t  Delete one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker name> <directory path>\n\t\t  Delete all the file in the same original path from target locker\n"
 			+ "\n  -r, -retrieve\tRetrieve File/s from locker\n"
 //			+ "\t\t<locker>\t\t  Retrieve whole locker\n"
-			+ "\t\t<locker> <file path> <target path>\n\t\t  Retrieve one file from target locker, full absolute original path of the file\n"
-			+ "\t\t<locker> <directory path> <target path>\n\t\t  Retrieve all the file in the same original path from target locker\n"
+			+ "\t\t<locker name> <file path> <target output path>\n\t\t  Retrieve one file from target locker, full absolute original path of the file\n"
+			+ "\t\t<locker name> <directory path> <target output path>\n\t\t  Retrieve all the file in the same original path from target locker\n"
 			+ "\n  -s, -show\tShow content\n"
-			+ "\t\t-locker\t\t  Display all lockers\n"
-			+ "\t\t-file <locker>\t  Display all files in target locker\n"
+			+ "\t\t-locker\t\t\t  Display all lockers\n"
+			+ "\t\t-file <locker name>\t  Display all files in target locker\n"
 			+ "\n  -h, -help\tHelp Prompt";
 			
 

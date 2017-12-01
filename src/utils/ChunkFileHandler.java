@@ -190,7 +190,7 @@ public class ChunkFileHandler {
 	}
 
 	/**
-	 * @return all the file names in this locker in one string
+	 * @return all the file names, pure name, in this locker in one string
 	 */
 	public String getNames() {
 		ArrayList<String> result = new ArrayList<String>();
@@ -206,7 +206,7 @@ public class ChunkFileHandler {
 	}
 
 	/**
-	 * @return all the file names in this locker in one string
+	 * @return all the file names, absolute path, in this locker in one string
 	 */
 	public String getAbsoluteNames() {
 		ArrayList<String> result = new ArrayList<String>();
@@ -234,6 +234,7 @@ public class ChunkFileHandler {
 	}
 
 	/**
+	 * Save the chunk data and file index list to locker 
 	 * 
 	 * @throws IOException
 	 */

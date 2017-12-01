@@ -41,13 +41,19 @@ public class FileSaveLoad {
 	public static Hashtable<String, String> loadChunkTable(String name) throws ClassNotFoundException, IOException{
 		return (Hashtable<String, String>) loadHelper(name).readObject();
 	}
-
 	@SuppressWarnings("unchecked")
 	public static HashMap<String, ArrayList<String>> loadIndexFileList(String name) throws IOException, ClassNotFoundException{
 		return (HashMap<String, ArrayList<String>>) loadHelper(name).readObject();
 	}
 
-	public static ObjectInputStream loadHelper(String fileName) throws IOException {
+	/**
+	 * Load helper method 
+	 * 
+	 * @param file name to save
+	 * @return inputStream object has the input file
+	 * @throws IOException
+	 */
+	private static ObjectInputStream loadHelper(String fileName) throws IOException {
 		FileInputStream fis = new FileInputStream(fileName);
 		return new ObjectInputStream(fis);
 	}

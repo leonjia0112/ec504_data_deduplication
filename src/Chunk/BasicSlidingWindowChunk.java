@@ -78,10 +78,13 @@ public class BasicSlidingWindowChunk extends Chunk{
 	 * @throws IOException 
 	 */
 	private void makeChunk(File inputFile) throws IOException {
+		
+		// Check ASCII file
 		if(!Utilities.isPureAsciiFile(inputFile.getAbsolutePath())){
 			System.out.println("Can't chunk non ASCII file.");
 			return;
 		}
+		
 		ArrayList<String> hashList = new ArrayList<String>();
 		FileInputStream fis = null;
 		FileInputStream fisForChunk = null;

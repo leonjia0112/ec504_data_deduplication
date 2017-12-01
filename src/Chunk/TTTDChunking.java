@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 /**
  * This class using Basic Sliding Window algorithm to create chunk for each

@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 /**
  * This class create chunk by splitting the file into equal size windows,
@@ -29,8 +28,8 @@ public class FixedSizeChunk extends Chunk{
 	@Override
 	public void handleListFile(HashSet<File> inputFile) {
 		for(File f : inputFile){
-			int index = 0;
-			int count = 0;
+//			int index = 0;
+//			int count = 0;
 			byte[] readByte = null;
 			ArrayList<String> hashList = new ArrayList<String>();
 			FileInputStream fis;

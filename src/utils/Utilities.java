@@ -35,19 +35,21 @@ public class Utilities {
 	}
 	
 	/**
+	 * Determine whether the path is a directory or a file path
 	 * 
-	 * @param s
-	 * @return
+	 * @param path
+	 * @return true is path is directory path, false if it is file path
 	 */
 	public static boolean isDirectory(String s){
 		return s.lastIndexOf("/") == s.length() - 1;
 	}
 	
 	/**
+	 * Save file to text file
 	 * 
-	 * @param content
-	 * @param path
-	 * @param fileName
+	 * @param file content
+	 * @param save to path
+	 * @param save to file name
 	 * @throws FileNotFoundException
 	 */
 	public static void saveTextFile(String content, String path, String fileName) throws FileNotFoundException{
@@ -61,9 +63,10 @@ public class Utilities {
 	}
 	
 	/**
+	 * Save file to text file
 	 * 
-	 * @param content
-	 * @param pathNName
+	 * @param file content
+	 * @param file name and its path together
 	 * @throws FileNotFoundException
 	 */
 	public static void saveTextFile(String content, String pathNName) throws FileNotFoundException{
@@ -73,9 +76,10 @@ public class Utilities {
 	}
 	
 	/**
+	 * Check file type, ASCII or not
 	 * 
-	 * @param inputPath
-	 * @return
+	 * @param inputPath for file
+	 * @return true is is ASCII, false elsewhere
 	 * @throws IOException
 	 */
 	public static boolean isPureAsciiFile(String inputPath) throws IOException{
@@ -98,13 +102,14 @@ public class Utilities {
 	}
 	
 	/**
+	 * Check String type, ASCII or not
 	 * 
-	 * @param v
-	 * @return
+	 * @param string to check
+	 * @return true is string is ASCII, false elsewhere 
 	 */
-	private static boolean isPureAscii(String v) {
-		byte bytearray []  = v.getBytes();
-		CharsetDecoder d = Charset.forName("US-ASCII").newDecoder();
+	private static boolean isPureAscii(String str) {
+		byte bytearray []  = str.getBytes();
+		CharsetDecoder d = Charset.forName("UTF-8").newDecoder();
 		try {
 			CharBuffer r = d.decode(ByteBuffer.wrap(bytearray));
 			r.toString();
